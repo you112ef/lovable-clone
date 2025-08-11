@@ -22,19 +22,19 @@
       "static/chunks/main-app-21e2e70b15fe3b99.js",
       "static/chunks/app/connect4/page-1b05fc8e1f94abea.js"
     ],
-    "/hello-world/page": [
-      "static/chunks/webpack-4eae68c151628de8.js",
-      "static/chunks/fd9d1056-c58d53ae92c99a0f.js",
-      "static/chunks/23-ccf84356546fe7e3.js",
-      "static/chunks/main-app-21e2e70b15fe3b99.js",
-      "static/chunks/app/hello-world/page-a5507fa67def994f.js"
-    ],
     "/generate/page": [
       "static/chunks/webpack-4eae68c151628de8.js",
       "static/chunks/fd9d1056-c58d53ae92c99a0f.js",
       "static/chunks/23-ccf84356546fe7e3.js",
       "static/chunks/main-app-21e2e70b15fe3b99.js",
       "static/chunks/app/generate/page-1caeb02ae0668af4.js"
+    ],
+    "/hello-world/page": [
+      "static/chunks/webpack-4eae68c151628de8.js",
+      "static/chunks/fd9d1056-c58d53ae92c99a0f.js",
+      "static/chunks/23-ccf84356546fe7e3.js",
+      "static/chunks/main-app-21e2e70b15fe3b99.js",
+      "static/chunks/app/hello-world/page-a5507fa67def994f.js"
     ],
     "/page": [
       "static/chunks/webpack-4eae68c151628de8.js",

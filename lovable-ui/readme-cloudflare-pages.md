@@ -13,17 +13,13 @@ npm install
 
 ## Build command (Pages settings)
 - Build command: `npm run cf:build`
-- Output directory: `.vercel/output/static`
+- Output directory: `.vercel/output`
 - Functions directory: `.vercel/output/functions`
-- Build output: `.vercel/output`
-
-These paths are produced by `@cloudflare/next-on-pages`.
+- Static assets: `.vercel/output/static`
 
 ## Environment variables
-Add as needed in Pages > Settings > Environment variables:
-- `ANTHROPIC_API_KEY`
-- `DAYTONA_API_KEY` (optional; the `/api/generate-daytona` endpoint is disabled on Edge and requires a Node host)
+- Optional on Pages. Note: API routes are disabled on Pages in this repo.
 
 ## Notes
-- `/api/generate` runs on Edge and works on Pages.
-- `/api/generate-daytona` returns 501 on Pages (Edge), as it relies on Node child_process. Run locally or deploy to a Node host if required.
+- `/api/generate` and `/api/generate-daytona` are disabled on Cloudflare Pages and return 501 to satisfy Edge runtime requirements.
+- If you need these endpoints, deploy them to a Node environment (e.g., Vercel/Render/Fly) or to Cloudflare Workers/Queues/Durable Objects, and call them from the client.
