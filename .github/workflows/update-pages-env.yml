@@ -1,0 +1,36 @@
+name: Update Pages Env
+
+on:
+  workflow_dispatch:
+    inputs:
+      pagesProject:
+        description: Cloudflare Pages project name
+        required: true
+      pagesAccountId:
+        description: Cloudflare Account ID
+        required: true
+      apiUrl:
+        description: API URL to set as NEXT_PUBLIC_GENERATE_API_URL
+        required: true
+
+jobs:
+  update-env:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set Pages environment variable (Preview)
+        if: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          curl -s -X PATCH \
+            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            https://api.cloudflare.com/client/v4/accounts/${{ github.event.inputs.pagesAccountId }}/pages/projects/${{ github.event.inputs.pagesProject }}/production/variables \
+            -d '{"NEXT_PUBLIC_GENERATE_API_URL": {"value": "'"${{ github.event.inputs.apiUrl }}"'"}}' | cat
+
+      - name: Set Pages environment variable (Production)
+        if: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          curl -s -X PATCH \
+            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            https://api.cloudflare.com/client/v4/accounts/${{ github.event.inputs.pagesAccountId }}/pages/projects/${{ github.event.inputs.pagesProject }}/preview/variables \
+            -d '{"NEXT_PUBLIC_GENERATE_API_URL": {"value": "'"${{ github.event.inputs.apiUrl }}"'"}}' | cat

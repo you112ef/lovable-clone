@@ -1,0 +1,27 @@
+name: Deploy API to Render
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'server/**'
+      - 'render.yaml'
+  workflow_dispatch: {}
+
+jobs:
+  deploy:
+    if: ${{ secrets.RENDER_API_KEY && secrets.RENDER_OWNER_ID }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Trigger Render Blueprint deploy
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          RENDER_OWNER_ID: ${{ secrets.RENDER_OWNER_ID }}
+        run: |
+          curl -s -X POST \
+            -H "Authorization: Bearer $RENDER_API_KEY" \
+            -H "Content-Type: application/json" \
+            https://api.render.com/v1/blueprints \
+            -d '{"ownerId":"'"$RENDER_OWNER_ID"'","repo":"'"${{ github.repository }}"'","branch":"'"${{ github.ref_name }}"'","clearRenderYamlCache":true}' | cat
