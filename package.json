@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "cf:build": "npm --prefix lovable-ui install --no-audit --no-fund --progress=false && npm --prefix lovable-ui run cf:build"
+    "cf:build": "npm --prefix lovable-ui install --no-audit --no-fund --progress=false && npm --prefix lovable-ui run cf:build && rm -rf .vercel/output vercel/output && mkdir -p .vercel && cp -R lovable-ui/.vercel/output .vercel/output && mkdir -p vercel && cp -R lovable-ui/.vercel/output vercel/output"
   },
   "keywords": [],
   "author": "",
