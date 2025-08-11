@@ -2,33 +2,6 @@
   "version": 3,
   "middleware": {},
   "functions": {
-    "/api/generate-daytona/route": {
-      "files": [
-        "server/middleware-build-manifest.js",
-        "server/middleware-react-loadable-manifest.js",
-        "server/next-font-manifest.js",
-        "server/interception-route-rewrite-manifest.js",
-        "prerender-manifest.js",
-        "server/edge-runtime-webpack.js",
-        "server/edge-chunks/108.js",
-        "server/app/api/generate-daytona/route.js"
-      ],
-      "name": "app/api/generate-daytona/route",
-      "page": "/api/generate-daytona/route",
-      "matchers": [
-        {
-          "regexp": "^/api/generate\\-daytona$",
-          "originalSource": "/api/generate-daytona"
-        }
-      ],
-      "wasm": [],
-      "assets": [],
-      "environments": {
-        "previewModeId": "d909fb27d77281aaaba7cedcbf7385e0",
-        "previewModeSigningKey": "e78e06773ee352d45731e8f8f6d5a93ee576c1c35aa133eb831e54b7c6a0fd4f",
-        "previewModeEncryptionKey": "74514fb401d6544714a82f9aed683bfebd5a9a5a00402bd768ba3a2a553559c2"
-      }
-    },
     "/api/generate/route": {
       "files": [
         "server/middleware-build-manifest.js",
@@ -51,9 +24,36 @@
       "wasm": [],
       "assets": [],
       "environments": {
-        "previewModeId": "d909fb27d77281aaaba7cedcbf7385e0",
-        "previewModeSigningKey": "e78e06773ee352d45731e8f8f6d5a93ee576c1c35aa133eb831e54b7c6a0fd4f",
-        "previewModeEncryptionKey": "74514fb401d6544714a82f9aed683bfebd5a9a5a00402bd768ba3a2a553559c2"
+        "previewModeId": "dd8f922b6c0ce1a7a4f00784628fc220",
+        "previewModeSigningKey": "ea8046991e8ddeb200c82566b806a5291491217a7eb2e45aca1f30aacd4dda7a",
+        "previewModeEncryptionKey": "c749f8414e9bed5f997d02dd18515a6e41552320ff13947cad466a1a1965321e"
+      }
+    },
+    "/api/generate-daytona/route": {
+      "files": [
+        "server/middleware-build-manifest.js",
+        "server/middleware-react-loadable-manifest.js",
+        "server/next-font-manifest.js",
+        "server/interception-route-rewrite-manifest.js",
+        "prerender-manifest.js",
+        "server/edge-runtime-webpack.js",
+        "server/edge-chunks/108.js",
+        "server/app/api/generate-daytona/route.js"
+      ],
+      "name": "app/api/generate-daytona/route",
+      "page": "/api/generate-daytona/route",
+      "matchers": [
+        {
+          "regexp": "^/api/generate\\-daytona$",
+          "originalSource": "/api/generate-daytona"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "environments": {
+        "previewModeId": "dd8f922b6c0ce1a7a4f00784628fc220",
+        "previewModeSigningKey": "ea8046991e8ddeb200c82566b806a5291491217a7eb2e45aca1f30aacd4dda7a",
+        "previewModeEncryptionKey": "c749f8414e9bed5f997d02dd18515a6e41552320ff13947cad466a1a1965321e"
       }
     }
   },
