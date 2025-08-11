@@ -24,9 +24,9 @@
       "wasm": [],
       "assets": [],
       "environments": {
-        "previewModeId": "dd8f922b6c0ce1a7a4f00784628fc220",
-        "previewModeSigningKey": "ea8046991e8ddeb200c82566b806a5291491217a7eb2e45aca1f30aacd4dda7a",
-        "previewModeEncryptionKey": "c749f8414e9bed5f997d02dd18515a6e41552320ff13947cad466a1a1965321e"
+        "previewModeId": "334633c06146b8f28445fbccc0727d3f",
+        "previewModeSigningKey": "d1b40db5941578609d0d1b5a1d15bb4de41da1289bfa9e60928902a9cc7db781",
+        "previewModeEncryptionKey": "2df95b9689470306f28183b008dff44faa224dc918e71f45846abd2c1f7fe88d"
       }
     },
     "/api/generate-daytona/route": {
@@ -51,9 +51,9 @@
       "wasm": [],
       "assets": [],
       "environments": {
-        "previewModeId": "dd8f922b6c0ce1a7a4f00784628fc220",
-        "previewModeSigningKey": "ea8046991e8ddeb200c82566b806a5291491217a7eb2e45aca1f30aacd4dda7a",
-        "previewModeEncryptionKey": "c749f8414e9bed5f997d02dd18515a6e41552320ff13947cad466a1a1965321e"
+        "previewModeId": "334633c06146b8f28445fbccc0727d3f",
+        "previewModeSigningKey": "d1b40db5941578609d0d1b5a1d15bb4de41da1289bfa9e60928902a9cc7db781",
+        "previewModeEncryptionKey": "2df95b9689470306f28183b008dff44faa224dc918e71f45846abd2c1f7fe88d"
       }
     }
   },
