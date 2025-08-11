@@ -53,20 +53,30 @@ function GeneratePageInner() {
   const generateWebsite = async () => {
     try {
       const localUrl = typeof window !== 'undefined' ? localStorage.getItem('generate_api_url') : null;
-      const apiUrl = localUrl || process.env.NEXT_PUBLIC_GENERATE_API_URL || "/api/generate-daytona";
+      const apiUrl = (localUrl || process.env.NEXT_PUBLIC_GENERATE_API_URL || '').trim();
+
+      if (!apiUrl) {
+        setIsGenerating(false);
+        setError("Generation needs an external API URL. Open Settings and set an API endpoint.");
+        return;
+      }
+
       const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ prompt }),
-        // Include credentials/cors if calling external host (optional)
         mode: apiUrl.startsWith("http") ? "cors" : "same-origin",
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to generate website");
+        let message = "Failed to generate website";
+        try { const errorData = await response.json(); message = errorData.error || message; } catch {}
+        if (response.status === 501) {
+          message = "Generation API is disabled on Pages. Configure an external API in Settings.";
+        }
+        throw new Error(message);
       }
 
       const reader = response.body?.getReader();
