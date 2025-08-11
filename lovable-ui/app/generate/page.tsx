@@ -52,7 +52,8 @@ function GeneratePageInner() {
   
   const generateWebsite = async () => {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_GENERATE_API_URL || "/api/generate-daytona";
+      const localUrl = typeof window !== 'undefined' ? localStorage.getItem('generate_api_url') : null;
+      const apiUrl = localUrl || process.env.NEXT_PUBLIC_GENERATE_API_URL || "/api/generate-daytona";
       const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
