@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "cf:build": "npm --prefix lovable-ui install --no-audit --no-fund --progress=false && npm --prefix lovable-ui run cf:build && rm -rf .vercel/output vercel/output && mkdir -p .vercel/output vercel/output && cp -R lovable-ui/.vercel/output/* .vercel/output/ && cp -R lovable-ui/.vercel/output/static/* vercel/output/"
   },
   "keywords": [],
   "author": "",

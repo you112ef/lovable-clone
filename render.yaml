@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: lovable-api
+    env: node
+    plan: free
+    region: oregon
+    rootDir: server
+    buildCommand: npm install
+    startCommand: npm start
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: DAYTONA_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false

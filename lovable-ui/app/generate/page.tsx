@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 
@@ -15,7 +15,7 @@ interface Message {
   sandboxId?: string;
 }
 
-export default function GeneratePage() {
+function GeneratePageInner() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const prompt = searchParams.get("prompt") || "";
@@ -41,7 +41,6 @@ export default function GeneratePage() {
       return;
     }
     
-    // Prevent double execution in StrictMode
     if (hasStartedRef.current) {
       return;
     }
@@ -49,22 +48,46 @@ export default function GeneratePage() {
     
     setIsGenerating(true);
     generateWebsite();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prompt, router]);
   
   const generateWebsite = async () => {
     try {
-      const response = await fetch("/api/generate-daytona", {
+      const localUrl = typeof window !== 'undefined' ? localStorage.getItem('generate_api_url') : null;
+      const defaultApi = 'https://lovable-api.fly.dev/api/generate-daytona';
+      const apiUrl = (localUrl || process.env.NEXT_PUBLIC_GENERATE_API_URL || defaultApi).trim();
+
+      if (!apiUrl) {
+        // try to auto-set from env
+        const envUrl = process.env.NEXT_PUBLIC_GENERATE_API_URL?.trim();
+        if (envUrl) {
+          if (typeof window !== 'undefined') localStorage.setItem('generate_api_url', envUrl);
+        } else {
+          // fallback: try query param captured by Navbar effect
+        }
+      }
+      const finalUrl = (typeof window !== 'undefined' ? localStorage.getItem('generate_api_url') : null) || apiUrl;
+      if (!finalUrl) {
+        setIsGenerating(false);
+        setError("No API configured. Append ?api=YOUR_API_URL to the URL once, or set NEXT_PUBLIC_GENERATE_API_URL.");
+        return;
+      }
+
+      const response = await fetch(finalUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ prompt }),
+        mode: finalUrl.startsWith("http") ? "cors" : "same-origin",
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to generate website");
+        let message = "Failed to generate website";
+        try { const errorData = await response.json(); message = errorData.error || message; } catch {}
+        if (response.status === 501) {
+          message = "Generation API is disabled on Pages. Configure an external API in Settings.";
+        }
+        throw new Error(message);
       }
 
       const reader = response.body?.getReader();
@@ -117,7 +140,6 @@ export default function GeneratePage() {
   const formatToolInput = (input: any) => {
     if (!input) return "";
     
-    // Extract key information based on tool type
     if (input.file_path) {
       return `File: ${input.file_path}`;
     } else if (input.command) {
@@ -128,7 +150,6 @@ export default function GeneratePage() {
       return `Prompt: ${input.prompt.substring(0, 100)}...`;
     }
     
-    // For other cases, show first meaningful field
     const keys = Object.keys(input);
     if (keys.length > 0) {
       const firstKey = keys[0];
@@ -145,19 +166,15 @@ export default function GeneratePage() {
   return (
     <main className="h-screen bg-black flex flex-col overflow-hidden relative">
       <Navbar />
-      {/* Spacer for navbar */}
       <div className="h-16" />
       
       <div className="flex-1 flex overflow-hidden">
-        {/* Left side - Chat */}
         <div className="w-[30%] flex flex-col border-r border-gray-800">
-          {/* Header */}
           <div className="p-4 border-b border-gray-800">
             <h2 className="text-white font-semibold">Lovable</h2>
             <p className="text-gray-400 text-sm mt-1 break-words">{prompt}</p>
           </div>
           
-          {/* Messages */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4 overflow-x-hidden">
             {messages.map((message, index) => (
               <div key={index}>
@@ -206,7 +223,6 @@ export default function GeneratePage() {
             <div ref={messagesEndRef} />
           </div>
           
-          {/* Bottom input area */}
           <div className="p-4 border-t border-gray-800">
             <div className="flex items-center gap-2">
               <input
@@ -229,7 +245,6 @@ export default function GeneratePage() {
           </div>
         </div>
         
-        {/* Right side - Preview */}
         <div className="w-[70%] bg-gray-950 flex items-center justify-center">
           {!previewUrl && isGenerating && (
             <div className="text-center">
@@ -256,5 +271,13 @@ export default function GeneratePage() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function GeneratePage() {
+  return (
+    <Suspense>
+      <GeneratePageInner />
+    </Suspense>
   );
 }

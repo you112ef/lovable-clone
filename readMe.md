@@ -5,7 +5,7 @@ We appreciate your interest and hope you enjoy exploring and building with it.
 
 ## Getting Started
 
-Before you begin, please make sure to **replace the API keys** in your `.env` file:
+Before you begin, please make sure to replace the API keys in your `.env` file:
 
 - Get your Anthropic API key from: [Anthropic Console](https://console.anthropic.com/dashboard)
 - Get your Daytona API key from: [Daytona Dashboard](https://www.daytona.io/)
@@ -17,17 +17,17 @@ ANTHROPIC_API_KEY=your_anthropic_api_key
 DAYTONA_API_KEY=your_daytona_api_key
 ```
 
-## Install & Run
+## Frontend (Cloudflare Pages)
+- Build command: `npm run cf:build`
+- Output directory: `.vercel/output/static`
+- Functions directory: `.vercel/output/functions`
 
-From the `lovable-ui` directory, install all dependencies and start the development server:
+## Backend (Docker, no Fly)
+- Path: `server/`
+- Dockerfile: `server/Dockerfile`
+- Build: `docker build -t lovable-api ./server`
+- Run: `docker run -p 8080:8080 -e ANTHROPIC_API_KEY -e DAYTONA_API_KEY lovable-api`
+- Endpoint: `http://localhost:8080/api/generate-daytona`
 
-
-```bash
-cd lovable-ui
-
-npm install
-npm run dev
-```
-
-This will launch the app locally (by default at http://localhost:3000).
+To connect the frontend automatically, set `NEXT_PUBLIC_GENERATE_API_URL` in Cloudflare Pages to the public URL of your Docker-hosted API.
 

@@ -1,6 +1,61 @@
 {
   "version": 3,
   "middleware": {},
-  "functions": {},
+  "functions": {
+    "/api/generate/route": {
+      "files": [
+        "server/middleware-build-manifest.js",
+        "server/middleware-react-loadable-manifest.js",
+        "server/next-font-manifest.js",
+        "server/interception-route-rewrite-manifest.js",
+        "prerender-manifest.js",
+        "server/edge-runtime-webpack.js",
+        "server/edge-chunks/108.js",
+        "server/app/api/generate/route.js"
+      ],
+      "name": "app/api/generate/route",
+      "page": "/api/generate/route",
+      "matchers": [
+        {
+          "regexp": "^/api/generate$",
+          "originalSource": "/api/generate"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "environments": {
+        "previewModeId": "334633c06146b8f28445fbccc0727d3f",
+        "previewModeSigningKey": "d1b40db5941578609d0d1b5a1d15bb4de41da1289bfa9e60928902a9cc7db781",
+        "previewModeEncryptionKey": "2df95b9689470306f28183b008dff44faa224dc918e71f45846abd2c1f7fe88d"
+      }
+    },
+    "/api/generate-daytona/route": {
+      "files": [
+        "server/middleware-build-manifest.js",
+        "server/middleware-react-loadable-manifest.js",
+        "server/next-font-manifest.js",
+        "server/interception-route-rewrite-manifest.js",
+        "prerender-manifest.js",
+        "server/edge-runtime-webpack.js",
+        "server/edge-chunks/108.js",
+        "server/app/api/generate-daytona/route.js"
+      ],
+      "name": "app/api/generate-daytona/route",
+      "page": "/api/generate-daytona/route",
+      "matchers": [
+        {
+          "regexp": "^/api/generate\\-daytona$",
+          "originalSource": "/api/generate-daytona"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "environments": {
+        "previewModeId": "334633c06146b8f28445fbccc0727d3f",
+        "previewModeSigningKey": "d1b40db5941578609d0d1b5a1d15bb4de41da1289bfa9e60928902a9cc7db781",
+        "previewModeEncryptionKey": "2df95b9689470306f28183b008dff44faa224dc918e71f45846abd2c1f7fe88d"
+      }
+    }
+  },
   "sortedMiddleware": []
 }
