@@ -53,7 +53,8 @@ function GeneratePageInner() {
   const generateWebsite = async () => {
     try {
       const localUrl = typeof window !== 'undefined' ? localStorage.getItem('generate_api_url') : null;
-      const apiUrl = (localUrl || process.env.NEXT_PUBLIC_GENERATE_API_URL || '').trim();
+      const defaultApi = 'https://lovable-api.fly.dev/api/generate-daytona';
+      const apiUrl = (localUrl || process.env.NEXT_PUBLIC_GENERATE_API_URL || defaultApi).trim();
 
       if (!apiUrl) {
         // try to auto-set from env
