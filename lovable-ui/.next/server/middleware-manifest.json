@@ -2,33 +2,6 @@
   "version": 3,
   "middleware": {},
   "functions": {
-    "/api/generate/route": {
-      "files": [
-        "server/middleware-build-manifest.js",
-        "server/middleware-react-loadable-manifest.js",
-        "server/next-font-manifest.js",
-        "server/interception-route-rewrite-manifest.js",
-        "prerender-manifest.js",
-        "server/edge-runtime-webpack.js",
-        "server/edge-chunks/108.js",
-        "server/app/api/generate/route.js"
-      ],
-      "name": "app/api/generate/route",
-      "page": "/api/generate/route",
-      "matchers": [
-        {
-          "regexp": "^/api/generate$",
-          "originalSource": "/api/generate"
-        }
-      ],
-      "wasm": [],
-      "assets": [],
-      "environments": {
-        "previewModeId": "0423e3055315619e563853e4d78431e7",
-        "previewModeSigningKey": "30dbec483468ff795477d7602f54bd0ea3a5d0d876c6eab346d164e4a123ca63",
-        "previewModeEncryptionKey": "b92705b008823e5bacfa2549d43effaa94d79324d0b1765088d1cce9c88464f0"
-      }
-    },
     "/api/generate-daytona/route": {
       "files": [
         "server/middleware-build-manifest.js",
@@ -51,9 +24,36 @@
       "wasm": [],
       "assets": [],
       "environments": {
-        "previewModeId": "0423e3055315619e563853e4d78431e7",
-        "previewModeSigningKey": "30dbec483468ff795477d7602f54bd0ea3a5d0d876c6eab346d164e4a123ca63",
-        "previewModeEncryptionKey": "b92705b008823e5bacfa2549d43effaa94d79324d0b1765088d1cce9c88464f0"
+        "previewModeId": "a2535fb1eb66a49731ca7952b34e4f0d",
+        "previewModeSigningKey": "ed875a2be8b540650f7fb4b1c048890efdd45ae73a6023c51ba061e75e1c026b",
+        "previewModeEncryptionKey": "023a4b9904a02533d427b0e5b3ea94f0c3eacd0c11313b85180a3fb6739fb632"
+      }
+    },
+    "/api/generate/route": {
+      "files": [
+        "server/middleware-build-manifest.js",
+        "server/middleware-react-loadable-manifest.js",
+        "server/next-font-manifest.js",
+        "server/interception-route-rewrite-manifest.js",
+        "prerender-manifest.js",
+        "server/edge-runtime-webpack.js",
+        "server/edge-chunks/108.js",
+        "server/app/api/generate/route.js"
+      ],
+      "name": "app/api/generate/route",
+      "page": "/api/generate/route",
+      "matchers": [
+        {
+          "regexp": "^/api/generate$",
+          "originalSource": "/api/generate"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "environments": {
+        "previewModeId": "a2535fb1eb66a49731ca7952b34e4f0d",
+        "previewModeSigningKey": "ed875a2be8b540650f7fb4b1c048890efdd45ae73a6023c51ba061e75e1c026b",
+        "previewModeEncryptionKey": "023a4b9904a02533d427b0e5b3ea94f0c3eacd0c11313b85180a3fb6739fb632"
       }
     }
   },
