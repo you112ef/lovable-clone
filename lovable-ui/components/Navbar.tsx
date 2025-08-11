@@ -1,12 +1,29 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SettingsModal from "./SettingsModal";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const search = useSearchParams();
+
+  // Auto-configure external API URL from query or env on first load
+  useEffect(() => {
+    try {
+      const q = search?.get('api');
+      const existing = typeof window !== 'undefined' ? localStorage.getItem('generate_api_url') : null;
+      const envUrl = process.env.NEXT_PUBLIC_GENERATE_API_URL;
+      const next = (q || existing || envUrl || '').trim();
+      if (next && next !== existing) {
+        localStorage.setItem('generate_api_url', next);
+      }
+    } catch {}
+  }, [search]);
   return (
-    <nav className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-4 sm:px-6 py-4">
+    <Suspense>
+      <nav className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-4 sm:px-6 py-4">
       {/* Logo & main navigation */}
       <div className="flex items-center gap-6 sm:gap-10">
         <a
@@ -57,5 +74,6 @@ export default function Navbar() {
 
       <SettingsModal open={open} onClose={() => setOpen(false)} />
     </nav>
+    </Suspense>
   );
 }

@@ -56,18 +56,28 @@ function GeneratePageInner() {
       const apiUrl = (localUrl || process.env.NEXT_PUBLIC_GENERATE_API_URL || '').trim();
 
       if (!apiUrl) {
+        // try to auto-set from env
+        const envUrl = process.env.NEXT_PUBLIC_GENERATE_API_URL?.trim();
+        if (envUrl) {
+          if (typeof window !== 'undefined') localStorage.setItem('generate_api_url', envUrl);
+        } else {
+          // fallback: try query param captured by Navbar effect
+        }
+      }
+      const finalUrl = (typeof window !== 'undefined' ? localStorage.getItem('generate_api_url') : null) || apiUrl;
+      if (!finalUrl) {
         setIsGenerating(false);
-        setError("Generation needs an external API URL. Open Settings and set an API endpoint.");
+        setError("No API configured. Append ?api=YOUR_API_URL to the URL once, or set NEXT_PUBLIC_GENERATE_API_URL.");
         return;
       }
 
-      const response = await fetch(apiUrl, {
+      const response = await fetch(finalUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ prompt }),
-        mode: apiUrl.startsWith("http") ? "cors" : "same-origin",
+        mode: finalUrl.startsWith("http") ? "cors" : "same-origin",
       });
 
       if (!response.ok) {
