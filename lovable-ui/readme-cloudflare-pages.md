@@ -17,9 +17,14 @@ npm install
 - Functions directory: `.vercel/output/functions`
 - Static assets: `.vercel/output/static`
 
+## API Endpoints on Pages
+- `/api/generate` and `/api/generate-daytona` return 501 on Cloudflare Pages.
+- To use Daytona generation from Pages, set an external API URL:
+  - Add `NEXT_PUBLIC_GENERATE_API_URL` in Pages → Settings → Environment variables
+  - Value example: `https://your-node-host.example.com/api/generate-daytona`
+
 ## Environment variables
-- Optional on Pages. Note: API routes are disabled on Pages in this repo.
+- `NEXT_PUBLIC_GENERATE_API_URL` (optional): external API for generation.
 
 ## Notes
-- `/api/generate` and `/api/generate-daytona` are disabled on Cloudflare Pages and return 501 to satisfy Edge runtime requirements.
-- If you need these endpoints, deploy them to a Node environment (e.g., Vercel/Render/Fly) or to Cloudflare Workers/Queues/Durable Objects, and call them from the client.
+- For full server features, deploy APIs on Node/Workers and call from the client.

@@ -52,12 +52,15 @@ function GeneratePageInner() {
   
   const generateWebsite = async () => {
     try {
-      const response = await fetch("/api/generate-daytona", {
+      const apiUrl = process.env.NEXT_PUBLIC_GENERATE_API_URL || "/api/generate-daytona";
+      const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ prompt }),
+        // Include credentials/cors if calling external host (optional)
+        mode: apiUrl.startsWith("http") ? "cors" : "same-origin",
       });
 
       if (!response.ok) {
