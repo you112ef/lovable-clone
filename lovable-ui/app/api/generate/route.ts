@@ -1,6 +1,8 @@
 import { NextRequest } from "next/server";
 import { query } from "@anthropic-ai/claude-code";
 
+export const runtime = 'nodejs';
+
 export async function POST(req: NextRequest) {
   try {
     const { prompt } = await req.json();
@@ -47,10 +49,11 @@ export async function POST(req: NextRequest) {
           messageCount++;
           console.log(`[API] Message ${messageCount} - Type: ${message.type}`);
           
-          // Log specific details based on message type
-          if (message.type === 'tool_use') {
+          // Log specific details based on message type (runtime guard to satisfy TS)
+          const msgType = (message as any)?.type;
+          if (msgType === 'tool_use') {
             console.log(`[API] Tool use: ${(message as any).name}`);
-          } else if (message.type === 'result') {
+          } else if (msgType === 'result') {
             console.log(`[API] Result: ${(message as any).subtype}`);
           }
           
