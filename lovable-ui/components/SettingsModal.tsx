@@ -2,40 +2,20 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-type ProviderId =
-  | "anthropic"
-  | "openai"
-  | "azure-openai"
-  | "google"
-  | "mistral"
-  | "cohere"
-  | "groq"
-  | "perplexity"
-  | "openrouter"
-  | "together"
-  | "fireworks"
-  | "deepseek"
-  | "xai"
-  | "bedrock"
-  | "huggingface"
-  | "stability"
-  | "replicate"
-  | "custom";
+type ProviderId = "anthropic" | "openai" | "azure-openai" | "google" | "custom";
 
 interface FieldDef {
   key: string;
   label: string;
   placeholder?: string;
-  type?: "text" | "password" | "textarea";
-  helperText?: string;
+  type?: "text" | "password";
 }
 
 interface ProviderDef {
   id: ProviderId;
   label: string;
   fields: FieldDef[];
-  required: string[]; // keys required to make real requests
-  suggestedModels?: string[];
+  required: string[];
 }
 
 const PROVIDERS: ProviderDef[] = [
@@ -43,11 +23,6 @@ const PROVIDERS: ProviderDef[] = [
     id: "anthropic",
     label: "Anthropic (Claude)",
     required: ["apiKey", "model"],
-    suggestedModels: [
-      "claude-3-5-sonnet-latest",
-      "claude-3-5-haiku-latest",
-      "claude-3-opus-latest",
-    ],
     fields: [
       { key: "apiKey", label: "API Key", type: "password", placeholder: "sk-ant-..." },
       { key: "model", label: "Model", placeholder: "claude-3-5-sonnet-latest" },
@@ -58,13 +33,10 @@ const PROVIDERS: ProviderDef[] = [
     id: "openai",
     label: "OpenAI",
     required: ["apiKey", "model"],
-    suggestedModels: ["gpt-4o", "gpt-4o-mini", "o3-mini", "o4-mini"],
     fields: [
       { key: "apiKey", label: "API Key", type: "password", placeholder: "sk-..." },
       { key: "model", label: "Model", placeholder: "gpt-4o" },
       { key: "baseUrl", label: "Base URL (optional)", placeholder: "https://api.openai.com/v1" },
-      { key: "organization", label: "Organization (optional)" },
-      { key: "project", label: "Project (optional)" },
     ],
   },
   {
@@ -82,7 +54,6 @@ const PROVIDERS: ProviderDef[] = [
     id: "google",
     label: "Google (Gemini)",
     required: ["apiKey", "model"],
-    suggestedModels: ["gemini-1.5-pro", "gemini-1.5-flash"],
     fields: [
       { key: "apiKey", label: "API Key", type: "password" },
       { key: "model", label: "Model", placeholder: "gemini-1.5-pro" },
@@ -90,171 +61,13 @@ const PROVIDERS: ProviderDef[] = [
     ],
   },
   {
-    id: "mistral",
-    label: "Mistral AI",
-    required: ["apiKey", "model"],
-    suggestedModels: ["mistral-large-latest", "ministral-8b-latest"],
-    fields: [
-      { key: "apiKey", label: "API Key", type: "password" },
-      { key: "model", label: "Model", placeholder: "mistral-large-latest" },
-      { key: "baseUrl", label: "Base URL (optional)", placeholder: "https://api.mistral.ai/v1" },
-    ],
-  },
-  {
-    id: "cohere",
-    label: "Cohere",
-    required: ["apiKey", "model"],
-    suggestedModels: ["command-r-plus", "command-r", "command"],
-    fields: [
-      { key: "apiKey", label: "API Key", type: "password" },
-      { key: "model", label: "Model", placeholder: "command-r-plus" },
-      { key: "baseUrl", label: "Base URL (optional)" },
-    ],
-  },
-  {
-    id: "groq",
-    label: "Groq",
-    required: ["apiKey", "model"],
-    suggestedModels: [
-      "llama-3.1-70b-versatile",
-      "llama-3.1-8b-instant",
-      "mixtral-8x7b-32768",
-    ],
-    fields: [
-      { key: "apiKey", label: "API Key", type: "password" },
-      { key: "model", label: "Model", placeholder: "llama-3.1-70b-versatile" },
-      { key: "baseUrl", label: "Base URL (optional)", placeholder: "https://api.groq.com/openai/v1" },
-    ],
-  },
-  {
-    id: "perplexity",
-    label: "Perplexity",
-    required: ["apiKey", "model"],
-    suggestedModels: ["llama-3.1-sonar-large", "llama-3.1-sonar-small"],
-    fields: [
-      { key: "apiKey", label: "API Key", type: "password" },
-      { key: "model", label: "Model", placeholder: "llama-3.1-sonar-large" },
-      { key: "baseUrl", label: "Base URL (optional)", placeholder: "https://api.perplexity.ai" },
-    ],
-  },
-  {
-    id: "openrouter",
-    label: "OpenRouter",
-    required: ["apiKey", "model", "baseUrl"],
-    suggestedModels: [
-      "openrouter/anthropic/claude-3.5-sonnet",
-      "openrouter/openai/gpt-4o",
-      "meta-llama/llama-3.1-70b-instruct",
-    ],
-    fields: [
-      { key: "apiKey", label: "API Key", type: "password" },
-      { key: "model", label: "Model", placeholder: "openrouter/anthropic/claude-3.5-sonnet" },
-      { key: "baseUrl", label: "Base URL", placeholder: "https://openrouter.ai/api/v1" },
-      { key: "siteUrl", label: "Site URL (optional)", placeholder: "https://yourdomain.com" },
-      { key: "referer", label: "Referer (optional)", placeholder: "https://yourdomain.com" },
-    ],
-  },
-  {
-    id: "together",
-    label: "Together AI",
-    required: ["apiKey", "model"],
-    suggestedModels: [
-      "meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo",
-      "Qwen/Qwen2.5-72B-Instruct",
-    ],
-    fields: [
-      { key: "apiKey", label: "API Key", type: "password" },
-      { key: "model", label: "Model", placeholder: "meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo" },
-      { key: "baseUrl", label: "Base URL (optional)", placeholder: "https://api.together.xyz/v1" },
-    ],
-  },
-  {
-    id: "fireworks",
-    label: "Fireworks AI",
-    required: ["apiKey", "model"],
-    suggestedModels: [
-      "accounts/fireworks/models/llama-v3p1-70b-instruct",
-      "accounts/fireworks/models/llama-v3p1-8b-instruct",
-    ],
-    fields: [
-      { key: "apiKey", label: "API Key", type: "password" },
-      { key: "model", label: "Model", placeholder: "accounts/fireworks/models/llama-v3p1-70b-instruct" },
-      { key: "baseUrl", label: "Base URL (optional)", placeholder: "https://api.fireworks.ai/inference/v1" },
-    ],
-  },
-  {
-    id: "deepseek",
-    label: "DeepSeek",
-    required: ["apiKey", "model"],
-    suggestedModels: ["deepseek-chat", "deepseek-reasoner"],
-    fields: [
-      { key: "apiKey", label: "API Key", type: "password" },
-      { key: "model", label: "Model", placeholder: "deepseek-chat" },
-      { key: "baseUrl", label: "Base URL (optional)", placeholder: "https://api.deepseek.com" },
-    ],
-  },
-  {
-    id: "xai",
-    label: "xAI (Grok)",
-    required: ["apiKey", "model"],
-    suggestedModels: ["grok-2-1212"],
-    fields: [
-      { key: "apiKey", label: "API Key", type: "password" },
-      { key: "model", label: "Model", placeholder: "grok-2-1212" },
-      { key: "baseUrl", label: "Base URL (optional)", placeholder: "https://api.x.ai/v1" },
-    ],
-  },
-  {
-    id: "bedrock",
-    label: "AWS Bedrock",
-    required: ["accessKeyId", "secretAccessKey", "region", "model"],
-    fields: [
-      { key: "accessKeyId", label: "AWS Access Key ID" },
-      { key: "secretAccessKey", label: "AWS Secret Access Key", type: "password" },
-      { key: "region", label: "Region", placeholder: "us-east-1" },
-      { key: "model", label: "Model", placeholder: "anthropic.claude-3-5-sonnet-20240620-v1:0" },
-    ],
-  },
-  {
-    id: "huggingface",
-    label: "Hugging Face Inference",
-    required: ["apiKey", "repoId"],
-    fields: [
-      { key: "apiKey", label: "API Token", type: "password" },
-      { key: "repoId", label: "Model Repo (repoId)", placeholder: "meta-llama/Meta-Llama-3.1-8B-Instruct" },
-      { key: "baseUrl", label: "Base URL (optional)", placeholder: "https://api-inference.huggingface.co" },
-    ],
-  },
-  {
-    id: "stability",
-    label: "Stability AI (Images)",
-    required: ["apiKey", "engine"],
-    fields: [
-      { key: "apiKey", label: "API Key", type: "password" },
-      { key: "engine", label: "Engine/Model", placeholder: "stable-diffusion-xl-1024-v1-0" },
-      { key: "baseUrl", label: "Base URL (optional)", placeholder: "https://api.stability.ai" },
-    ],
-  },
-  {
-    id: "replicate",
-    label: "Replicate",
-    required: ["apiKey", "model"],
-    fields: [
-      { key: "apiKey", label: "API Token", type: "password" },
-      { key: "model", label: "Model", placeholder: "replicate/llama-3.1-70b-instruct" },
-      { key: "baseUrl", label: "Base URL (optional)", placeholder: "https://api.replicate.com/v1" },
-    ],
-  },
-  {
     id: "custom",
-    label: "Custom Provider",
+    label: "Custom",
     required: ["baseUrl"],
     fields: [
-      { key: "label", label: "Name", placeholder: "My Provider" },
       { key: "apiKey", label: "API Key", type: "password" },
-      { key: "baseUrl", label: "Base URL", placeholder: "https://api.example.com/v1" },
       { key: "model", label: "Model" },
-      { key: "extraHeaders", label: "Extra Headers (JSON)", type: "textarea", helperText: "ex: {\"X-Custom\": \"value\"}" },
+      { key: "baseUrl", label: "Base URL", placeholder: "https://api.example.com/v1" },
     ],
   },
 ];
@@ -263,50 +76,36 @@ function ns(provider: ProviderId, key: string) {
   return `provider_${provider}_${key}`;
 }
 
-function getInitial(provider: ProviderId) {
-  const def = PROVIDERS.find((p) => p.id === provider)!;
-  const values: Record<string, string> = {};
-  def.fields.forEach((f) => {
-    const v = typeof window !== "undefined" ? localStorage.getItem(ns(provider, f.key)) : null;
-    if (v) values[f.key] = v;
-  });
-  return values;
-}
-
 export default function SettingsModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [activeProvider, setActiveProvider] = useState<ProviderId>("anthropic");
-  const [formValues, setFormValues] = useState<Record<string, string>>({});
-  const [generateApiUrl, setGenerateApiUrl] = useState("");
-  const [saved, setSaved] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [providerQuery, setProviderQuery] = useState("");
   const def = useMemo(() => PROVIDERS.find((p) => p.id === activeProvider)!, [activeProvider]);
-  const filteredProviders = useMemo(
-    () => PROVIDERS.filter((p) => p.label.toLowerCase().includes(providerQuery.toLowerCase())),
-    [providerQuery]
-  );
+  const [values, setValues] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     if (!open) return;
     try {
       const ap = localStorage.getItem("active_provider") as ProviderId | null;
       setActiveProvider(ap || "anthropic");
-      const g = localStorage.getItem("generate_api_url");
-      if (g) setGenerateApiUrl(g);
     } catch {}
   }, [open]);
 
   useEffect(() => {
-    setFormValues(getInitial(activeProvider));
+    // Load stored values for the selected provider
+    const next: Record<string, string> = {};
+    def.fields.forEach((f) => {
+      const v = typeof window !== "undefined" ? localStorage.getItem(ns(activeProvider, f.key)) : null;
+      if (v) next[f.key] = v;
+    });
+    setValues(next);
     setErrors({});
-  }, [activeProvider]);
+  }, [def, activeProvider]);
 
-  const validate = (): boolean => {
+  const validate = () => {
     const next: Record<string, string> = {};
     def.required.forEach((k) => {
-      if (!formValues[k] || !String(formValues[k]).trim()) {
-        next[k] = "Required";
-      }
+      if (!values[k] || !String(values[k]).trim()) next[k] = "Required";
     });
     setErrors(next);
     return Object.keys(next).length === 0;
@@ -316,59 +115,12 @@ export default function SettingsModal({ open, onClose }: { open: boolean; onClos
     if (!validate()) return;
     try {
       localStorage.setItem("active_provider", activeProvider);
-      localStorage.setItem("generate_api_url", generateApiUrl);
       def.fields.forEach((f) => {
-        const v = formValues[f.key] || "";
-        localStorage.setItem(ns(activeProvider, f.key), v);
+        localStorage.setItem(ns(activeProvider, f.key), values[f.key] || "");
       });
       setSaved(true);
-      setTimeout(() => setSaved(false), 1500);
+      setTimeout(() => setSaved(false), 1200);
     } catch {}
-  };
-
-  const exportConfig = () => {
-    const data: any = { active_provider: activeProvider, generate_api_url: generateApiUrl };
-    PROVIDERS.forEach((p) => {
-      data[p.id] = {};
-      p.fields.forEach((f) => {
-        const v = typeof window !== "undefined" ? localStorage.getItem(ns(p.id, f.key)) : null;
-        if (v) data[p.id][f.key] = v;
-      });
-    });
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "ai-settings.json";
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const importConfig = async (file: File) => {
-    const text = await file.text();
-    const data = JSON.parse(text);
-    if (data.active_provider) localStorage.setItem("active_provider", data.active_provider);
-    if (data.generate_api_url) localStorage.setItem("generate_api_url", data.generate_api_url);
-    PROVIDERS.forEach((p) => {
-      const values = data[p.id] || {};
-      p.fields.forEach((f) => {
-        if (values[f.key] !== undefined) localStorage.setItem(ns(p.id, f.key), String(values[f.key]));
-      });
-    });
-    setActiveProvider((data.active_provider as ProviderId) || activeProvider);
-    setGenerateApiUrl(data.generate_api_url || generateApiUrl);
-    setFormValues(getInitial((data.active_provider as ProviderId) || activeProvider));
-    setSaved(true);
-    setTimeout(() => setSaved(false), 1500);
-  };
-
-  const resetAll = () => {
-    PROVIDERS.forEach((p) => p.fields.forEach((f) => localStorage.removeItem(ns(p.id, f.key))));
-    localStorage.removeItem("active_provider");
-    localStorage.removeItem("generate_api_url");
-    setFormValues({});
-    setGenerateApiUrl("");
-    setErrors({});
   };
 
   if (!open) return null;
@@ -376,87 +128,43 @@ export default function SettingsModal({ open, onClose }: { open: boolean; onClos
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
       <div className="absolute inset-0 bg-black/60" onClick={onClose} />
-      <div className="relative w-full max-w-3xl rounded-2xl bg-[#0b0b0b] border border-gray-800 shadow-2xl overflow-hidden">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 sm:px-6 py-4 border-b border-gray-800">
-          <div className="flex items-center gap-2">
-            <h2 className="text-white text-lg sm:text-xl font-semibold">Settings</h2>
-            <span className="text-xs px-2 py-1 rounded bg-gray-800 text-gray-200 border border-gray-700">{PROVIDERS.find(p=>p.id===activeProvider)?.label}</span>
-          </div>
-          <div className="flex items-center gap-2 text-xs">
-            <button onClick={exportConfig} className="px-3 py-2 rounded-lg bg-gray-900 border border-gray-800 text-gray-200 hover:bg-gray-800">Export</button>
-            <label className="px-3 py-2 rounded-lg bg-gray-900 border border-gray-800 text-gray-200 hover:bg-gray-800 cursor-pointer">
-              Import
-              <input type="file" accept="application/json" className="hidden" onChange={(e)=>{ const f=e.target.files?.[0]; if (f) importConfig(f); }} />
-            </label>
-            <button onClick={resetAll} className="px-3 py-2 rounded-lg bg-gray-900 border border-gray-800 text-gray-200 hover:bg-gray-800">Reset</button>
-            <button onClick={onClose} className="px-3 py-2 rounded-lg bg-gray-900 border border-gray-800 text-gray-200 hover:bg-gray-800">Close</button>
-          </div>
+      <div className="relative w-full max-w-xl rounded-2xl bg-[#0b0b0b] border border-gray-800 shadow-2xl overflow-hidden">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-gray-800">
+          <h2 className="text-white text-lg sm:text-xl font-semibold">Model Settings</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-white">✕</button>
         </div>
 
-        <div className="p-4 sm:p-6 grid grid-cols-1 gap-6">
-          <section className="space-y-3">
-            <h3 className="text-white font-medium">AI Provider</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <label className="text-sm text-gray-300">Search providers
-                <input value={providerQuery} onChange={(e)=>setProviderQuery(e.target.value)} placeholder="Type to filter..." className="mt-1 w-full rounded-lg bg-black border border-gray-800 text-gray-200 px-3 py-2" />
-              </label>
-              <label className="text-sm text-gray-300">Provider
-                <select value={activeProvider} onChange={(e)=>setActiveProvider(e.target.value as ProviderId)} className="mt-1 w-full rounded-lg bg-black border border-gray-800 text-gray-200 px-3 py-2">
-                  {filteredProviders.map((p)=> (
-                    <option key={p.id} value={p.id}>{p.label}</option>
-                  ))}
-                </select>
-              </label>
+        <div className="p-4 sm:p-6 grid grid-cols-1 gap-4">
+          <label className="text-sm text-gray-300">Provider
+            <select value={activeProvider} onChange={(e)=>setActiveProvider(e.target.value as ProviderId)} className="mt-1 w-full rounded-lg bg-black border border-gray-800 text-gray-200 px-3 py-2">
+              {PROVIDERS.map((p)=> (
+                <option key={p.id} value={p.id}>{p.label}</option>
+              ))}
+            </select>
+          </label>
 
-              {def.fields.map((f)=> {
-                const hasError = !!errors[f.key];
-                return (
-                  <label key={f.key} className="text-sm text-gray-300">
-                    {f.label}
-                    {f.type === "textarea" ? (
-                      <textarea
-                        value={formValues[f.key] || ""}
-                        onChange={(e)=>setFormValues((s)=>({...s, [f.key]: e.target.value}))}
-                        placeholder={f.placeholder}
-                        className={`mt-1 w-full rounded-lg bg-black border ${hasError? 'border-red-600' : 'border-gray-800'} text-gray-200 px-3 py-2 min-h-[88px]`}
-                      />
-                    ) : (
-                      <input
-                        value={formValues[f.key] || ""}
-                        onChange={(e)=>setFormValues((s)=>({...s, [f.key]: e.target.value}))}
-                        placeholder={f.placeholder}
-                        type={f.type === "password" ? "password" : "text"}
-                        className={`mt-1 w-full rounded-lg bg-black border ${hasError? 'border-red-600' : 'border-gray-800'} text-gray-200 px-3 py-2`}
-                      />
-                    )}
-                    {errors[f.key] && <div className="text-xs text-red-400 mt-1">{errors[f.key]}</div>}
-                  </label>
-                );
-              })}
-            </div>
-            {def.suggestedModels && def.suggestedModels.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {def.suggestedModels.map((m)=> (
-                  <button key={m} onClick={()=>setFormValues((s)=>({...s, model: m}))} className="px-2.5 py-1.5 rounded-lg bg-gray-900 border border-gray-800 text-gray-200 hover:bg-gray-800 text-xs">
-                    {m}
-                  </button>
-                ))}
-              </div>
-            )}
-            <p className="text-xs text-gray-500">Values are stored locally in your browser. For server-side usage, configure environment variables on your API host.</p>
-          </section>
+          {def.fields.map((f)=> {
+            const hasError = !!errors[f.key];
+            return (
+              <label key={f.key} className="text-sm text-gray-300">
+                {f.label}
+                <input
+                  value={values[f.key] || ""}
+                  onChange={(e)=>setValues((s)=>({...s, [f.key]: e.target.value}))}
+                  placeholder={f.placeholder}
+                  type={f.type === "password" ? "password" : "text"}
+                  className={`mt-1 w-full rounded-lg bg-black border ${hasError? 'border-red-600' : 'border-gray-800'} text-gray-200 px-3 py-2`}
+                />
+                {errors[f.key] && <div className="text-xs text-red-400 mt-1">{errors[f.key]}</div>}
+              </label>
+            );
+          })}
 
-          <section className="space-y-3">
-            <h3 className="text-white font-medium">Generation API</h3>
-            <label className="text-sm text-gray-300 block">External API URL
-              <input value={generateApiUrl} onChange={(e)=>setGenerateApiUrl(e.target.value)} placeholder="https://your-api.example.com/api/generate-daytona" className="mt-1 w-full rounded-lg bg-black border border-gray-800 text-gray-200 px-3 py-2" />
-            </label>
-            <p className="text-xs text-gray-500">If set, the app will call this URL instead of the built-in Pages API (disabled on Cloudflare Pages).</p>
-          </section>
+          <p className="text-xs text-gray-500">Only essential fields. Values are stored locally in your browser.</p>
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 sm:px-6 py-4 border-t border-gray-800">
-          <div className="text-xs text-gray-500">Responsive • Mobile-friendly • Import/Export</div>
+        <div className="flex items-center justify-between gap-3 px-4 sm:px-6 py-4 border-t border-gray-800">
+          <div className="text-xs text-gray-500">Minimal • Exact • Responsive</div>
           <div className="flex items-center gap-2">
             {saved && <div className="text-green-400 text-sm">Saved</div>}
             <button onClick={save} className="px-4 py-2 rounded-lg bg-white text-black font-semibold hover:bg-gray-100">Save</button>
