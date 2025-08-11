@@ -4,6 +4,6 @@
   "/generate/page": "app/generate/page.js",
   "/hello-world/page": "app/hello-world/page.js",
   "/page": "app/page.js",
-  "/api/generate-daytona/route": "app/api/generate-daytona/route.js",
-  "/api/generate/route": "app/api/generate/route.js"
+  "/api/generate/route": "app/api/generate/route.js",
+  "/api/generate-daytona/route": "app/api/generate-daytona/route.js"
 }
