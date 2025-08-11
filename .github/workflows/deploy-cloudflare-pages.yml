@@ -7,6 +7,7 @@ on:
     paths:
       - 'lovable-ui/**'
       - '.github/workflows/deploy-cloudflare-pages.yml'
+      - 'wrangler.toml'
   workflow_dispatch: {}
 
 concurrency:
@@ -46,13 +47,16 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CF_PAGES_PROJECT: ${{ secrets.CF_PAGES_PROJECT }}
         run: |
+          cd ..
           npx --yes wrangler@3 pages deploy \
             .vercel/output/static \
             --project-name "$CF_PAGES_PROJECT" \
             --account-id "$CLOUDFLARE_ACCOUNT_ID" \
             --branch "${{ github.ref_name }}" \
             --commit-hash "${{ github.sha }}" \
-            --commit-message "${{ github.event.head_commit.message || 'CI deploy' }}"
+            --commit-message "${{ github.event.head_commit.message || 'CI deploy' }}" \
+            --compatibility-date=2025-08-01 \
+            --compatibility-flags=nodejs_compat
 
       - name: Output Preview/Production URL
         if: always()
