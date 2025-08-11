@@ -16,6 +16,7 @@ interface ProviderDef {
   label: string;
   fields: FieldDef[];
   required: string[];
+  models?: string[]; // options for model dropdown (or deployment for azure)
 }
 
 const PROVIDERS: ProviderDef[] = [
@@ -23,8 +24,15 @@ const PROVIDERS: ProviderDef[] = [
     id: "anthropic",
     label: "Anthropic (Claude)",
     required: ["apiKey", "model"],
+    models: [
+      "claude-3-5-sonnet-latest",
+      "claude-3-5-haiku-latest",
+      "claude-3-opus-latest",
+      "claude-3-haiku-20240307",
+    ],
     fields: [
       { key: "apiKey", label: "API Key", type: "password", placeholder: "sk-ant-..." },
+      // model will be rendered as dropdown; we still keep the key to store
       { key: "model", label: "Model", placeholder: "claude-3-5-sonnet-latest" },
       { key: "baseUrl", label: "Base URL (optional)", placeholder: "https://api.anthropic.com" },
     ],
@@ -33,6 +41,7 @@ const PROVIDERS: ProviderDef[] = [
     id: "openai",
     label: "OpenAI",
     required: ["apiKey", "model"],
+    models: ["gpt-4o", "gpt-4o-mini", "o3-mini", "o4-mini"],
     fields: [
       { key: "apiKey", label: "API Key", type: "password", placeholder: "sk-..." },
       { key: "model", label: "Model", placeholder: "gpt-4o" },
@@ -43,9 +52,11 @@ const PROVIDERS: ProviderDef[] = [
     id: "azure-openai",
     label: "Azure OpenAI",
     required: ["apiKey", "endpoint", "deployment", "apiVersion"],
+    models: ["gpt-4o", "gpt-35-turbo", "gpt-4o-mini"],
     fields: [
       { key: "apiKey", label: "API Key", type: "password" },
       { key: "endpoint", label: "Endpoint", placeholder: "https://YOUR-RESOURCE.openai.azure.com" },
+      // deployment will be controlled by model dropdown
       { key: "deployment", label: "Deployment Name", placeholder: "gpt-4o" },
       { key: "apiVersion", label: "API Version", placeholder: "2024-06-01" },
     ],
@@ -54,6 +65,7 @@ const PROVIDERS: ProviderDef[] = [
     id: "google",
     label: "Google (Gemini)",
     required: ["apiKey", "model"],
+    models: ["gemini-1.5-pro", "gemini-1.5-flash"],
     fields: [
       { key: "apiKey", label: "API Key", type: "password" },
       { key: "model", label: "Model", placeholder: "gemini-1.5-pro" },
@@ -64,6 +76,7 @@ const PROVIDERS: ProviderDef[] = [
     id: "custom",
     label: "Custom",
     required: ["baseUrl"],
+    // no predefined models; fallback to text input
     fields: [
       { key: "apiKey", label: "API Key", type: "password" },
       { key: "model", label: "Model" },
@@ -98,6 +111,11 @@ export default function SettingsModal({ open, onClose }: { open: boolean; onClos
       const v = typeof window !== "undefined" ? localStorage.getItem(ns(activeProvider, f.key)) : null;
       if (v) next[f.key] = v;
     });
+    // Default model selection if not set and models list exists
+    if (!next[activeProvider === "azure-openai" ? "deployment" : "model"] && def.models && def.models.length > 0) {
+      const key = activeProvider === "azure-openai" ? "deployment" : "model";
+      next[key] = def.models[0];
+    }
     setValues(next);
     setErrors({});
   }, [def, activeProvider]);
@@ -125,6 +143,9 @@ export default function SettingsModal({ open, onClose }: { open: boolean; onClos
 
   if (!open) return null;
 
+  const modelKey = activeProvider === "azure-openai" ? "deployment" : "model";
+  const modelError = !!errors[modelKey];
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
       <div className="absolute inset-0 bg-black/60" onClick={onClose} />
@@ -135,15 +156,48 @@ export default function SettingsModal({ open, onClose }: { open: boolean; onClos
         </div>
 
         <div className="p-4 sm:p-6 grid grid-cols-1 gap-4">
+          {/* Dropdown 1: Provider */}
           <label className="text-sm text-gray-300">Provider
-            <select value={activeProvider} onChange={(e)=>setActiveProvider(e.target.value as ProviderId)} className="mt-1 w-full rounded-lg bg-black border border-gray-800 text-gray-200 px-3 py-2">
+            <select
+              value={activeProvider}
+              onChange={(e)=>setActiveProvider(e.target.value as ProviderId)}
+              className="mt-1 w-full rounded-lg bg-black border border-gray-800 text-gray-200 px-3 py-2"
+            >
               {PROVIDERS.map((p)=> (
                 <option key={p.id} value={p.id}>{p.label}</option>
               ))}
             </select>
           </label>
 
-          {def.fields.map((f)=> {
+          {/* Dropdown 2: Model (or deployment for Azure) */}
+          {def.models && def.models.length > 0 ? (
+            <label className="text-sm text-gray-300">{activeProvider === "azure-openai" ? "Deployment" : "Model"}
+              <select
+                value={values[modelKey] || def.models[0]}
+                onChange={(e)=> setValues((s)=> ({...s, [modelKey]: e.target.value}))}
+                className={`mt-1 w-full rounded-lg bg:black border ${modelError ? 'border-red-600' : 'border-gray-800'} text-gray-200 px-3 py-2`}
+              >
+                {def.models.map((m)=>(
+                  <option key={m} value={m}>{m}</option>
+                ))}
+              </select>
+              {modelError && <div className="text-xs text-red-400 mt-1">Required</div>}
+            </label>
+          ) : (
+            // Fallback to text input if no predefined models (e.g., Custom)
+            <label className="text-sm text-gray-300">Model
+              <input
+                value={values.model || ""}
+                onChange={(e)=>setValues((s)=>({...s, model: e.target.value}))}
+                placeholder="model"
+                className={`mt-1 w-full rounded-lg bg-black border ${modelError? 'border-red-600' : 'border-gray-800'} text-gray-200 px-3 py-2`}
+              />
+              {modelError && <div className="text-xs text-red-400 mt-1">Required</div>}
+            </label>
+          )}
+
+          {/* Other fields except model/deployment */}
+          {def.fields.filter((f)=> f.key !== "model" && f.key !== "deployment").map((f)=>{
             const hasError = !!errors[f.key];
             return (
               <label key={f.key} className="text-sm text-gray-300">
@@ -155,7 +209,7 @@ export default function SettingsModal({ open, onClose }: { open: boolean; onClos
                   type={f.type === "password" ? "password" : "text"}
                   className={`mt-1 w-full rounded-lg bg-black border ${hasError? 'border-red-600' : 'border-gray-800'} text-gray-200 px-3 py-2`}
                 />
-                {errors[f.key] && <div className="text-xs text-red-400 mt-1">{errors[f.key]}</div>}
+                {hasError && <div className="text-xs text-red-400 mt-1">{errors[f.key]}</div>}
               </label>
             );
           })}
