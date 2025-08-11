@@ -34,12 +34,20 @@ interface ProviderDef {
   id: ProviderId;
   label: string;
   fields: FieldDef[];
+  required: string[]; // keys required to make real requests
+  suggestedModels?: string[];
 }
 
 const PROVIDERS: ProviderDef[] = [
   {
     id: "anthropic",
     label: "Anthropic (Claude)",
+    required: ["apiKey", "model"],
+    suggestedModels: [
+      "claude-3-5-sonnet-latest",
+      "claude-3-5-haiku-latest",
+      "claude-3-opus-latest",
+    ],
     fields: [
       { key: "apiKey", label: "API Key", type: "password", placeholder: "sk-ant-..." },
       { key: "model", label: "Model", placeholder: "claude-3-5-sonnet-latest" },
@@ -49,6 +57,8 @@ const PROVIDERS: ProviderDef[] = [
   {
     id: "openai",
     label: "OpenAI",
+    required: ["apiKey", "model"],
+    suggestedModels: ["gpt-4o", "gpt-4o-mini", "o3-mini", "o4-mini"],
     fields: [
       { key: "apiKey", label: "API Key", type: "password", placeholder: "sk-..." },
       { key: "model", label: "Model", placeholder: "gpt-4o" },
@@ -60,6 +70,7 @@ const PROVIDERS: ProviderDef[] = [
   {
     id: "azure-openai",
     label: "Azure OpenAI",
+    required: ["apiKey", "endpoint", "deployment", "apiVersion"],
     fields: [
       { key: "apiKey", label: "API Key", type: "password" },
       { key: "endpoint", label: "Endpoint", placeholder: "https://YOUR-RESOURCE.openai.azure.com" },
@@ -70,6 +81,8 @@ const PROVIDERS: ProviderDef[] = [
   {
     id: "google",
     label: "Google (Gemini)",
+    required: ["apiKey", "model"],
+    suggestedModels: ["gemini-1.5-pro", "gemini-1.5-flash"],
     fields: [
       { key: "apiKey", label: "API Key", type: "password" },
       { key: "model", label: "Model", placeholder: "gemini-1.5-pro" },
@@ -79,6 +92,8 @@ const PROVIDERS: ProviderDef[] = [
   {
     id: "mistral",
     label: "Mistral AI",
+    required: ["apiKey", "model"],
+    suggestedModels: ["mistral-large-latest", "ministral-8b-latest"],
     fields: [
       { key: "apiKey", label: "API Key", type: "password" },
       { key: "model", label: "Model", placeholder: "mistral-large-latest" },
@@ -88,6 +103,8 @@ const PROVIDERS: ProviderDef[] = [
   {
     id: "cohere",
     label: "Cohere",
+    required: ["apiKey", "model"],
+    suggestedModels: ["command-r-plus", "command-r", "command"],
     fields: [
       { key: "apiKey", label: "API Key", type: "password" },
       { key: "model", label: "Model", placeholder: "command-r-plus" },
@@ -97,6 +114,12 @@ const PROVIDERS: ProviderDef[] = [
   {
     id: "groq",
     label: "Groq",
+    required: ["apiKey", "model"],
+    suggestedModels: [
+      "llama-3.1-70b-versatile",
+      "llama-3.1-8b-instant",
+      "mixtral-8x7b-32768",
+    ],
     fields: [
       { key: "apiKey", label: "API Key", type: "password" },
       { key: "model", label: "Model", placeholder: "llama-3.1-70b-versatile" },
@@ -106,6 +129,8 @@ const PROVIDERS: ProviderDef[] = [
   {
     id: "perplexity",
     label: "Perplexity",
+    required: ["apiKey", "model"],
+    suggestedModels: ["llama-3.1-sonar-large", "llama-3.1-sonar-small"],
     fields: [
       { key: "apiKey", label: "API Key", type: "password" },
       { key: "model", label: "Model", placeholder: "llama-3.1-sonar-large" },
@@ -115,6 +140,12 @@ const PROVIDERS: ProviderDef[] = [
   {
     id: "openrouter",
     label: "OpenRouter",
+    required: ["apiKey", "model", "baseUrl"],
+    suggestedModels: [
+      "openrouter/anthropic/claude-3.5-sonnet",
+      "openrouter/openai/gpt-4o",
+      "meta-llama/llama-3.1-70b-instruct",
+    ],
     fields: [
       { key: "apiKey", label: "API Key", type: "password" },
       { key: "model", label: "Model", placeholder: "openrouter/anthropic/claude-3.5-sonnet" },
@@ -126,6 +157,11 @@ const PROVIDERS: ProviderDef[] = [
   {
     id: "together",
     label: "Together AI",
+    required: ["apiKey", "model"],
+    suggestedModels: [
+      "meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo",
+      "Qwen/Qwen2.5-72B-Instruct",
+    ],
     fields: [
       { key: "apiKey", label: "API Key", type: "password" },
       { key: "model", label: "Model", placeholder: "meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo" },
@@ -135,6 +171,11 @@ const PROVIDERS: ProviderDef[] = [
   {
     id: "fireworks",
     label: "Fireworks AI",
+    required: ["apiKey", "model"],
+    suggestedModels: [
+      "accounts/fireworks/models/llama-v3p1-70b-instruct",
+      "accounts/fireworks/models/llama-v3p1-8b-instruct",
+    ],
     fields: [
       { key: "apiKey", label: "API Key", type: "password" },
       { key: "model", label: "Model", placeholder: "accounts/fireworks/models/llama-v3p1-70b-instruct" },
@@ -144,6 +185,8 @@ const PROVIDERS: ProviderDef[] = [
   {
     id: "deepseek",
     label: "DeepSeek",
+    required: ["apiKey", "model"],
+    suggestedModels: ["deepseek-chat", "deepseek-reasoner"],
     fields: [
       { key: "apiKey", label: "API Key", type: "password" },
       { key: "model", label: "Model", placeholder: "deepseek-chat" },
@@ -153,6 +196,8 @@ const PROVIDERS: ProviderDef[] = [
   {
     id: "xai",
     label: "xAI (Grok)",
+    required: ["apiKey", "model"],
+    suggestedModels: ["grok-2-1212"],
     fields: [
       { key: "apiKey", label: "API Key", type: "password" },
       { key: "model", label: "Model", placeholder: "grok-2-1212" },
@@ -162,6 +207,7 @@ const PROVIDERS: ProviderDef[] = [
   {
     id: "bedrock",
     label: "AWS Bedrock",
+    required: ["accessKeyId", "secretAccessKey", "region", "model"],
     fields: [
       { key: "accessKeyId", label: "AWS Access Key ID" },
       { key: "secretAccessKey", label: "AWS Secret Access Key", type: "password" },
@@ -172,6 +218,7 @@ const PROVIDERS: ProviderDef[] = [
   {
     id: "huggingface",
     label: "Hugging Face Inference",
+    required: ["apiKey", "repoId"],
     fields: [
       { key: "apiKey", label: "API Token", type: "password" },
       { key: "repoId", label: "Model Repo (repoId)", placeholder: "meta-llama/Meta-Llama-3.1-8B-Instruct" },
@@ -181,6 +228,7 @@ const PROVIDERS: ProviderDef[] = [
   {
     id: "stability",
     label: "Stability AI (Images)",
+    required: ["apiKey", "engine"],
     fields: [
       { key: "apiKey", label: "API Key", type: "password" },
       { key: "engine", label: "Engine/Model", placeholder: "stable-diffusion-xl-1024-v1-0" },
@@ -190,6 +238,7 @@ const PROVIDERS: ProviderDef[] = [
   {
     id: "replicate",
     label: "Replicate",
+    required: ["apiKey", "model"],
     fields: [
       { key: "apiKey", label: "API Token", type: "password" },
       { key: "model", label: "Model", placeholder: "replicate/llama-3.1-70b-instruct" },
@@ -199,6 +248,7 @@ const PROVIDERS: ProviderDef[] = [
   {
     id: "custom",
     label: "Custom Provider",
+    required: ["baseUrl"],
     fields: [
       { key: "label", label: "Name", placeholder: "My Provider" },
       { key: "apiKey", label: "API Key", type: "password" },
@@ -228,7 +278,13 @@ export default function SettingsModal({ open, onClose }: { open: boolean; onClos
   const [formValues, setFormValues] = useState<Record<string, string>>({});
   const [generateApiUrl, setGenerateApiUrl] = useState("");
   const [saved, setSaved] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [providerQuery, setProviderQuery] = useState("");
   const def = useMemo(() => PROVIDERS.find((p) => p.id === activeProvider)!, [activeProvider]);
+  const filteredProviders = useMemo(
+    () => PROVIDERS.filter((p) => p.label.toLowerCase().includes(providerQuery.toLowerCase())),
+    [providerQuery]
+  );
 
   useEffect(() => {
     if (!open) return;
@@ -242,9 +298,22 @@ export default function SettingsModal({ open, onClose }: { open: boolean; onClos
 
   useEffect(() => {
     setFormValues(getInitial(activeProvider));
+    setErrors({});
   }, [activeProvider]);
 
+  const validate = (): boolean => {
+    const next: Record<string, string> = {};
+    def.required.forEach((k) => {
+      if (!formValues[k] || !String(formValues[k]).trim()) {
+        next[k] = "Required";
+      }
+    });
+    setErrors(next);
+    return Object.keys(next).length === 0;
+  };
+
   const save = () => {
+    if (!validate()) return;
     try {
       localStorage.setItem("active_provider", activeProvider);
       localStorage.setItem("generate_api_url", generateApiUrl);
@@ -299,6 +368,7 @@ export default function SettingsModal({ open, onClose }: { open: boolean; onClos
     localStorage.removeItem("generate_api_url");
     setFormValues({});
     setGenerateApiUrl("");
+    setErrors({});
   };
 
   if (!open) return null;
@@ -308,7 +378,10 @@ export default function SettingsModal({ open, onClose }: { open: boolean; onClos
       <div className="absolute inset-0 bg-black/60" onClick={onClose} />
       <div className="relative w-full max-w-3xl rounded-2xl bg-[#0b0b0b] border border-gray-800 shadow-2xl overflow-hidden">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 sm:px-6 py-4 border-b border-gray-800">
-          <h2 className="text-white text-lg sm:text-xl font-semibold">Settings</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-white text-lg sm:text-xl font-semibold">Settings</h2>
+            <span className="text-xs px-2 py-1 rounded bg-gray-800 text-gray-200 border border-gray-700">{PROVIDERS.find(p=>p.id===activeProvider)?.label}</span>
+          </div>
           <div className="flex items-center gap-2 text-xs">
             <button onClick={exportConfig} className="px-3 py-2 rounded-lg bg-gray-900 border border-gray-800 text-gray-200 hover:bg-gray-800">Export</button>
             <label className="px-3 py-2 rounded-lg bg-gray-900 border border-gray-800 text-gray-200 hover:bg-gray-800 cursor-pointer">
@@ -324,37 +397,52 @@ export default function SettingsModal({ open, onClose }: { open: boolean; onClos
           <section className="space-y-3">
             <h3 className="text-white font-medium">AI Provider</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <label className="text-sm text-gray-300">Search providers
+                <input value={providerQuery} onChange={(e)=>setProviderQuery(e.target.value)} placeholder="Type to filter..." className="mt-1 w-full rounded-lg bg-black border border-gray-800 text-gray-200 px-3 py-2" />
+              </label>
               <label className="text-sm text-gray-300">Provider
                 <select value={activeProvider} onChange={(e)=>setActiveProvider(e.target.value as ProviderId)} className="mt-1 w-full rounded-lg bg-black border border-gray-800 text-gray-200 px-3 py-2">
-                  {PROVIDERS.map((p)=> (
+                  {filteredProviders.map((p)=> (
                     <option key={p.id} value={p.id}>{p.label}</option>
                   ))}
                 </select>
               </label>
-              <div className="hidden sm:block" />
-              {def.fields.map((f)=> (
-                <label key={f.key} className="text-sm text-gray-300">
-                  {f.label}
-                  {f.type === "textarea" ? (
-                    <textarea
-                      value={formValues[f.key] || ""}
-                      onChange={(e)=>setFormValues((s)=>({...s, [f.key]: e.target.value}))}
-                      placeholder={f.placeholder}
-                      className="mt-1 w-full rounded-lg bg-black border border-gray-800 text-gray-200 px-3 py-2 min-h-[88px]"
-                    />
-                  ) : (
-                    <input
-                      value={formValues[f.key] || ""}
-                      onChange={(e)=>setFormValues((s)=>({...s, [f.key]: e.target.value}))}
-                      placeholder={f.placeholder}
-                      type={f.type === "password" ? "password" : "text"}
-                      className="mt-1 w-full rounded-lg bg-black border border-gray-800 text-gray-200 px-3 py-2"
-                    />
-                  )}
-                  {f.helperText && <div className="text-xs text-gray-500 mt-1">{f.helperText}</div>}
-                </label>
-              ))}
+
+              {def.fields.map((f)=> {
+                const hasError = !!errors[f.key];
+                return (
+                  <label key={f.key} className="text-sm text-gray-300">
+                    {f.label}
+                    {f.type === "textarea" ? (
+                      <textarea
+                        value={formValues[f.key] || ""}
+                        onChange={(e)=>setFormValues((s)=>({...s, [f.key]: e.target.value}))}
+                        placeholder={f.placeholder}
+                        className={`mt-1 w-full rounded-lg bg-black border ${hasError? 'border-red-600' : 'border-gray-800'} text-gray-200 px-3 py-2 min-h-[88px]`}
+                      />
+                    ) : (
+                      <input
+                        value={formValues[f.key] || ""}
+                        onChange={(e)=>setFormValues((s)=>({...s, [f.key]: e.target.value}))}
+                        placeholder={f.placeholder}
+                        type={f.type === "password" ? "password" : "text"}
+                        className={`mt-1 w-full rounded-lg bg-black border ${hasError? 'border-red-600' : 'border-gray-800'} text-gray-200 px-3 py-2`}
+                      />
+                    )}
+                    {errors[f.key] && <div className="text-xs text-red-400 mt-1">{errors[f.key]}</div>}
+                  </label>
+                );
+              })}
             </div>
+            {def.suggestedModels && def.suggestedModels.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {def.suggestedModels.map((m)=> (
+                  <button key={m} onClick={()=>setFormValues((s)=>({...s, model: m}))} className="px-2.5 py-1.5 rounded-lg bg-gray-900 border border-gray-800 text-gray-200 hover:bg-gray-800 text-xs">
+                    {m}
+                  </button>
+                ))}
+              </div>
+            )}
             <p className="text-xs text-gray-500">Values are stored locally in your browser. For server-side usage, configure environment variables on your API host.</p>
           </section>
 
